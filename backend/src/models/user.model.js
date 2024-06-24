@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
-import {jwt} from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 const userSchema = new Schema(
   {
@@ -20,7 +20,8 @@ const userSchema = new Schema(
     mobileNo: {
       type: Number,
       required: true,
-      max: 10,
+      // max: 12,
+      unique: true
     },
     password: {
       type: String,
