@@ -6,10 +6,10 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const deleteOnCloudinary = async(filePath) => {
+const deleteOnCloudinary = async(imageName) => {
     try {
-        await cloudinary.uploader.destroy(filePath,{
-            resource_type: "auto"
+        await cloudinary.uploader.destroy(imageName,(error,success) => {
+            console.log(error,success);
         })
         console.log("File deleted on cloudinary successfully.");
     } catch (error) {
