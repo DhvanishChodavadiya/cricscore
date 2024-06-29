@@ -3,7 +3,7 @@
 const RegisterForm = () => {
   return (
     <div className="h-[100%] w-[100%] flex justify-center">
-      <form className="h-[100%] w-[90%] border border-black">
+      <form className="h-[100%] w-[90%]">
         <div className="w-[100%]">
           <input
             type="text"
