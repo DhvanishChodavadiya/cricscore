@@ -72,7 +72,7 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
-      enum: ["Male", "Female", "Prefer not to say"],
+      enum: ["Male", "Female", "Other"],
     },
     profilePhoto: {
       type: String,
