@@ -2,8 +2,8 @@ import { useState } from "react";
 import { FcAddImage } from "react-icons/fc";
 
 const RegisterForm = () => {
-  const [formData,setFormData] = useState({
-    email : "",
+  const [formData, setFormData] = useState({
+    email: "",
     fullName: "",
     jerseyNo: "",
     mobileNo: "",
@@ -15,22 +15,27 @@ const RegisterForm = () => {
     battingStyle: "",
     bowlingStyle: "",
     gender: "",
-    profilePhoto: ""
-  })
+    profilePhoto: "",
+  });
   const onChangeHandler = (e) => {
-    const {name,value} = e.target;
-    setFormData(prevState => ({...prevState,[name]:value})
-    )
+    // console.log(e.target.files);
+    const { name, value ,files } = e.target;
+    setFormData(prevState => ({ ...prevState, [name]: value }));
     console.log(formData);
-  }
+    if (e.target.files != null) {
+      setFormData(prevState => ({...prevState, profilePhoto: files[0].name}))
+    }
+  };
+
   const onSubmitHandler = (e) => {
     e.preventDefault();
-  }
+  };
   return (
     <div className="h-[100%] w-[100%] flex justify-center">
       <form className="h-[100%] w-[90%]" onSubmit={onSubmitHandler}>
         <div className="w-[100%]">
           <input
+            // value={formData.email}
             type="text"
             placeholder="Enter email"
             name="email"
@@ -160,22 +165,45 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%] flex">
           <label className="font-thin text-2xl pr-4">
-            <input type="radio" name="gender" value="Male" onChange={onChangeHandler}/> Male
+            <input
+              type="radio"
+              name="gender"
+              value="Male"
+              onChange={onChangeHandler}
+            />{" "}
+            Male
           </label>
           <label className="font-thin text-2xl pr-4">
-            <input type="radio" name="gender" value="Female" onChange={onChangeHandler}/> Female
+            <input
+              type="radio"
+              name="gender"
+              value="Female"
+              onChange={onChangeHandler}
+            />{" "}
+            Female
           </label>
           <label className="font-thin text-2xl pr-4">
-            <input type="radio" name="gender" value="Other" onChange={onChangeHandler}/>
+            <input
+              type="radio"
+              name="gender"
+              value="Other"
+              onChange={onChangeHandler}
+            />
             Other
           </label>
         </div>
         <div className="w-[100%] flex">
-          <FcAddImage className="text-3xl mt-2"/>
-          <input type="file" className="mb-4 mt-2 ml-3" onChange={onChangeHandler}/>
+          <FcAddImage className="text-3xl mt-2" />
+          <input
+            type="file"
+            className="mb-4 mt-2 ml-3"
+            onChange={onChangeHandler}
+          />
         </div>
         <div className="flex justify-center mt-2 mb-4">
-          <button className="w-[150px] p-4 font-medium rounded-md bg-green-500 text-white">Register</button>
+          <button className="w-[150px] p-4 font-medium rounded-md bg-green-500 text-white">
+            Register
+          </button>
         </div>
       </form>
     </div>
