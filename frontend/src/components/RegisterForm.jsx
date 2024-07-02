@@ -1,57 +1,63 @@
 import { useState } from "react";
-import { FcAddImage } from "react-icons/fc";
+// import { FcAddImage } from "react-icons/fc";
 import axios from "axios";
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     email: "",
     fullName: "",
-    jerseyNo: "",
+    // jerseyNo: "",
     mobileNo: "",
     password: "",
-    city: "",
-    state: "",
-    DOB: "",
-    playingRole: "",
-    battingStyle: "",
-    bowlingStyle: "",
-    gender: "",
-    profilePhoto: "",
+    // city: "",
+    // state: "",
+    // DOB: "",
+    // playingRole: "",
+    // battingStyle: "",
+    // bowlingStyle: "",
+    // gender: "",
+    // profilePhoto: "",
   });
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
     console.log(formData);
   };
-  const onImageChangeHandler = (e) => {
-    const file = e.target.files[0];
-    setFileToBase(file);
-  };
-  const setFileToBase = (file) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setFormData((prevState) => ({
-        ...prevState,
-        profilePhoto: reader.result,
-      }));
-    };
-    console.log(formData);
-  };
+  // const onImageChangeHandler = (e) => {
+  //   const file = e.target.files[0];
+  //   setFileToBase(file);
+  // };
+  // const setFileToBase = (file) => {
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
+  //   reader.onloadend = () => {
+  //     setFormData((prevState) => ({
+  //       ...prevState,
+  //       profilePhoto: reader.result,
+  //     }));
+  //   };
+  //   console.log(formData);
+  // };
 
   const onSubmitHandler = async(e) => {
     e.preventDefault();
-    try {
-      const {data} = await axios.post("/api/v1/user/register",formData)
-      if (data.success) {
-        console.log("User registered successfully.");
-      }
-    } catch (error) {
+    await axios.post("/api/v1/user/register",formData)
+    .then(response => {
+      setFormData({
+        email: "",
+        mobileNo: "",
+        password: "",
+        fullName: ""
+      })
+      alert(response.data.message)
+      console.log(response.data.message);
+    })
+    .catch(error => {
       console.log(error);
-    }
+    })
   };
   return (
-    <div className="h-[100%] w-[100%] flex justify-center">
+    <div className="h-[100vh] w-[100%] bg-blue-950 flex justify-center items-center">
       <form className="h-[100%] w-[90%]" onSubmit={onSubmitHandler}>
         <div className="w-[100%]">
           <input
@@ -93,7 +99,7 @@ const RegisterForm = () => {
             onChange={onChangeHandler}
           />
         </div>
-        <div className="w-[100%]">
+        {/* <div className="w-[100%]">
           <input
             value={formData.jerseyNo}
             type="text"
@@ -221,15 +227,15 @@ const RegisterForm = () => {
             />
             Other
           </label>
-        </div>
-        <div className="w-[100%] flex">
+        </div> */}
+        {/* <div className="w-[100%] flex">
           <FcAddImage className="text-3xl mt-2" />
           <input
             type="file"
             className="mb-4 mt-2 ml-3"
             onChange={onImageChangeHandler}
           />
-        </div>
+        </div> */}
         <div className="flex justify-center mt-2 mb-4">
           <button className="w-[150px] p-4 font-medium rounded-md bg-green-500 text-white">
             Register

@@ -37,32 +37,32 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
-  let profilePhotoLocalPath;
-  if (
-    req.files &&
-    Array.isArray(req.files.profilePhoto) &&
-    req.files.profilePhoto.length > 0
-  ) {
-    profilePhotoLocalPath = await req.files.profilePhoto[0].path;
-  }
-  const profilePhoto = await uploadOnCloudinary(profilePhotoLocalPath);
-  if (!profilePhoto) {
-    throw new apiError(400, "Profile photo is required.");
-  }
+  // let profilePhotoLocalPath;
+  // if (
+  //   req.files &&
+  //   Array.isArray(req.files.profilePhoto) &&
+  //   req.files.profilePhoto.length > 0
+  // ) {
+  //   profilePhotoLocalPath = await req.files.profilePhoto[0].path;
+  // }
+  // const profilePhoto = await uploadOnCloudinary(profilePhotoLocalPath);
+  // if (!profilePhoto) {
+  //   throw new apiError(400, "Profile photo is required.");
+  // }
 
-  const  profilePhotoURL = profilePhoto.url;
-  const arrayOfImageURL = profilePhotoURL.split("/");
-  const imageFullName = arrayOfImageURL[arrayOfImageURL.length - 1];
-  const arrayOfimageName = imageFullName.split(".");
-  const imageName = arrayOfimageName[0];
-  await deleteOnCloudinary(imageName);
+  // const  profilePhotoURL = profilePhoto.url;
+  // const arrayOfImageURL = profilePhotoURL.split("/");
+  // const imageFullName = arrayOfImageURL[arrayOfImageURL.length - 1];
+  // const arrayOfimageName = imageFullName.split(".");
+  // const imageName = arrayOfimageName[0];
+  // await deleteOnCloudinary(imageName);
 
   const user = await User.create({
     email,
     fullName,
     mobileNo,
     password,
-    profilePhoto: profilePhoto.url,
+    // profilePhoto: profilePhoto.secure_url,
   });
   if (!user) {
     throw new apiError(500, "User not created.");

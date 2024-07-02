@@ -1,11 +1,12 @@
 import RegisterForm from "./components/RegisterForm";
+import {Route,Routes} from "react-router-dom";
 
 function App() {
 
   return (
-    <>
-     <RegisterForm />
-    </>
+    <Routes>
+      <Route path="register" element={<RegisterForm />} />
+    </Routes>
   )
 }
 
