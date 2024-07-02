@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FcAddImage } from "react-icons/fc";
+import axios from "axios";
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -18,24 +19,43 @@ const RegisterForm = () => {
     profilePhoto: "",
   });
   const onChangeHandler = (e) => {
-    // console.log(e.target.files);
-    const { name, value ,files } = e.target;
-    setFormData(prevState => ({ ...prevState, [name]: value }));
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
     console.log(formData);
-    if (e.target.files != null) {
-      setFormData(prevState => ({...prevState, profilePhoto: files[0].name}))
-    }
+  };
+  const onImageChangeHandler = (e) => {
+    const file = e.target.files[0];
+    setFileToBase(file);
+  };
+  const setFileToBase = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setFormData((prevState) => ({
+        ...prevState,
+        profilePhoto: reader.result,
+      }));
+    };
+    console.log(formData);
   };
 
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async(e) => {
     e.preventDefault();
+    try {
+      const {data} = await axios.post("/api/v1/user/register",formData)
+      if (data.success) {
+        console.log("User registered successfully.");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="h-[100%] w-[100%] flex justify-center">
       <form className="h-[100%] w-[90%]" onSubmit={onSubmitHandler}>
         <div className="w-[100%]">
           <input
-            // value={formData.email}
+            value={formData.email}
             type="text"
             placeholder="Enter email"
             name="email"
@@ -45,6 +65,7 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%]">
           <input
+            value={formData.fullName}
             type="text"
             placeholder="Enter full name"
             name="fullName"
@@ -54,6 +75,7 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%]">
           <input
+            value={formData.mobileNo}
             type="text"
             placeholder="Enter mobile number"
             name="mobileNo"
@@ -63,6 +85,7 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%]">
           <input
+            value={formData.password}
             type="text"
             placeholder="Enter password"
             name="password"
@@ -72,6 +95,7 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%]">
           <input
+            value={formData.jerseyNo}
             type="text"
             placeholder="Enter jersey number"
             name="jerseyNo"
@@ -81,6 +105,7 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%]">
           <input
+            value={formData.city}
             type="text"
             placeholder="Enter city"
             name="city"
@@ -90,6 +115,7 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%]">
           <input
+            value={formData.state}
             type="text"
             placeholder="Enter state"
             name="state"
@@ -99,6 +125,7 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%]">
           <input
+            value={formData.DOB}
             type="date"
             placeholder="Enter birth date"
             name="DOB"
@@ -108,6 +135,7 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%]">
           <select
+            value={formData.playingRole}
             className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
             name="playingRole"
             onChange={onChangeHandler}
@@ -128,6 +156,7 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%]">
           <select
+            value={formData.battingStyle}
             className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
             name="battingStyle"
             onChange={onChangeHandler}
@@ -141,6 +170,7 @@ const RegisterForm = () => {
         </div>
         <div className="w-[100%]">
           <select
+            value={formData.bowlingStyle}
             className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
             name="bowlingStyle"
             onChange={onChangeHandler}
@@ -170,7 +200,7 @@ const RegisterForm = () => {
               name="gender"
               value="Male"
               onChange={onChangeHandler}
-            />{" "}
+            />
             Male
           </label>
           <label className="font-thin text-2xl pr-4">
@@ -179,7 +209,7 @@ const RegisterForm = () => {
               name="gender"
               value="Female"
               onChange={onChangeHandler}
-            />{" "}
+            />
             Female
           </label>
           <label className="font-thin text-2xl pr-4">
@@ -197,7 +227,7 @@ const RegisterForm = () => {
           <input
             type="file"
             className="mb-4 mt-2 ml-3"
-            onChange={onChangeHandler}
+            onChange={onImageChangeHandler}
           />
         </div>
         <div className="flex justify-center mt-2 mb-4">
