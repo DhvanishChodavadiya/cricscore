@@ -20,12 +20,14 @@ const userSchema = new Schema(
     mobileNo: {
       type: Number,
       required: true,
-      // max: 12,
+      maxlength: 10,
       unique: true
     },
     password: {
       type: String,
       required: true,
+      minlength:8,
+      maxlength:16
     },
     city: {
       type: String,

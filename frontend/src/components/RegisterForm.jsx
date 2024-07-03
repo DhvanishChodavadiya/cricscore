@@ -1,4 +1,5 @@
 import { useState } from "react";
+import logo from "../assets/logo.png";
 // import { FcAddImage } from "react-icons/fc";
 import axios from "axios";
 
@@ -39,110 +40,114 @@ const RegisterForm = () => {
   //   console.log(formData);
   // };
 
-  const onSubmitHandler = async(e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
-    await axios.post("/api/v1/user/register",formData)
-    .then(response => {
-      setFormData({
-        email: "",
-        mobileNo: "",
-        password: "",
-        fullName: ""
+    await axios
+      .post("/api/v1/user/register", formData)
+      .then((response) => {
+        setFormData({
+          email: "",
+          mobileNo: "",
+          password: "",
+          fullName: "",
+        });
+        alert(response.data.message);
+        console.log(response.data.message);
       })
-      alert(response.data.message)
-      console.log(response.data.message);
-    })
-    .catch(error => {
-      console.log(error);
-    })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
-    <div className="h-[100vh] w-[100%] bg-blue-950 flex justify-center items-center">
-      <form className="h-[100%] w-[90%]" onSubmit={onSubmitHandler}>
-        <div className="w-[100%]">
+    <div className="h-[100vh] w-[100%] lg:flex lg:justify-center items-center">
+      <div className="w-[100%]  lg:flex lg:justify-center">
+        <img src={logo} className="lg:w-[50%]"/>
+      </div>
+      <form className="w-[100%] lg:bg-blue-500" onSubmit={onSubmitHandler}>
+        <div className="w-[100%] text-center">
           <input
             value={formData.email}
             type="text"
             placeholder="Enter email"
             name="email"
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
-        <div className="w-[100%]">
+        <div className="w-[100%] text-center">
           <input
             value={formData.fullName}
             type="text"
             placeholder="Enter full name"
             name="fullName"
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
-        <div className="w-[100%]">
+        <div className="w-[100%] text-center">
           <input
             value={formData.mobileNo}
             type="text"
             placeholder="Enter mobile number"
             name="mobileNo"
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
-        <div className="w-[100%]">
+        <div className="w-[100%] text-center">
           <input
             value={formData.password}
             type="text"
             placeholder="Enter password"
             name="password"
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
-        {/* <div className="w-[100%]">
+        {/* <div className="w-[100%] text-center">
           <input
             value={formData.jerseyNo}
             type="text"
             placeholder="Enter jersey number"
             name="jerseyNo"
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
-        <div className="w-[100%]">
+        <div className="w-[100%] text-center">
           <input
             value={formData.city}
             type="text"
             placeholder="Enter city"
             name="city"
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
-        <div className="w-[100%]">
+        <div className="w-[100%] text-center">
           <input
             value={formData.state}
             type="text"
             placeholder="Enter state"
             name="state"
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
-        <div className="w-[100%]">
+        <div className="w-[100%] text-center">
           <input
             value={formData.DOB}
             type="date"
             placeholder="Enter birth date"
             name="DOB"
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
-        <div className="w-[100%]">
+        <div className="w-[100%] text-center">
           <select
             value={formData.playingRole}
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             name="playingRole"
             onChange={onChangeHandler}
           >
@@ -160,10 +165,10 @@ const RegisterForm = () => {
             <option value="None">None</option>
           </select>
         </div>
-        <div className="w-[100%]">
+        <div className="w-[100%] text-center">
           <select
             value={formData.battingStyle}
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             name="battingStyle"
             onChange={onChangeHandler}
           >
@@ -174,10 +179,10 @@ const RegisterForm = () => {
             <option value="Right-hand bat">Right-hand bat</option>
           </select>
         </div>
-        <div className="w-[100%]">
+        <div className="w-[100%] text-center">
           <select
             value={formData.bowlingStyle}
-            className="border border-black w-full p-3 rounded-md font-thin text-xl mb-4 mt-2"
+            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             name="bowlingStyle"
             onChange={onChangeHandler}
           >
@@ -199,8 +204,8 @@ const RegisterForm = () => {
             <option value="None">None</option>
           </select>
         </div>
-        <div className="w-[100%] flex">
-          <label className="font-thin text-2xl pr-4">
+        <div className="w-[100%] flex justify-center">
+          <label className="font-mono text-2xl pr-4">
             <input
               type="radio"
               name="gender"
@@ -209,7 +214,7 @@ const RegisterForm = () => {
             />
             Male
           </label>
-          <label className="font-thin text-2xl pr-4">
+          <label className="font-mono text-2xl pr-4">
             <input
               type="radio"
               name="gender"
@@ -218,7 +223,7 @@ const RegisterForm = () => {
             />
             Female
           </label>
-          <label className="font-thin text-2xl pr-4">
+          <label className="font-mono text-2xl pr-4">
             <input
               type="radio"
               name="gender"
@@ -228,7 +233,7 @@ const RegisterForm = () => {
             Other
           </label>
         </div> */}
-        {/* <div className="w-[100%] flex">
+        {/* <div className="w-[100%] flex justify-center">
           <FcAddImage className="text-3xl mt-2" />
           <input
             type="file"
@@ -236,8 +241,8 @@ const RegisterForm = () => {
             onChange={onImageChangeHandler}
           />
         </div> */}
-        <div className="flex justify-center mt-2 mb-4">
-          <button className="w-[150px] p-4 font-medium rounded-md bg-green-500 text-white">
+        <div className="flex justify-center mt-2">
+          <button className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white mb-4">
             Register
           </button>
         </div>
