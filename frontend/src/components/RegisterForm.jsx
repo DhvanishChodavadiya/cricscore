@@ -4,10 +4,11 @@ import logo from "../assets/logo.png";
 import axios from "axios";
 
 const RegisterForm = () => {
+  const [error,setError] = useState([]);
   const [formData, setFormData] = useState({
     email: "",
     fullName: "",
-    // jerseyNo: "",
+    // // jerseyNo: "",
     mobileNo: "",
     password: "",
     // city: "",
@@ -22,8 +23,8 @@ const RegisterForm = () => {
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
-    console.log(formData);
   };
+
   // const onImageChangeHandler = (e) => {
   //   const file = e.target.files[0];
   //   setFileToBase(file);
@@ -42,6 +43,7 @@ const RegisterForm = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    console.log(formData);
     await axios
       .post("/api/v1/user/register", formData)
       .then((response) => {
@@ -54,23 +56,24 @@ const RegisterForm = () => {
         alert(response.data.message);
         console.log(response.data.message);
       })
-      .catch((error) => {
+      .catch((err) => {
+        setError(err)
         console.log(error);
       });
   };
   return (
     <div className="h-[100vh] w-[100%] lg:flex lg:justify-center items-center">
       <div className="w-[100%]  lg:flex lg:justify-center">
-        <img src={logo} className="lg:w-[50%]"/>
+        <img src={logo} className="lg:w-[100%]" />
       </div>
-      <form className="w-[100%] lg:bg-blue-500" onSubmit={onSubmitHandler}>
+      <form className="w-[100%]" onSubmit={onSubmitHandler}>
         <div className="w-[100%] text-center">
           <input
             value={formData.email}
             type="text"
             placeholder="Enter email"
             name="email"
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
@@ -80,7 +83,7 @@ const RegisterForm = () => {
             type="text"
             placeholder="Enter full name"
             name="fullName"
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
@@ -90,7 +93,7 @@ const RegisterForm = () => {
             type="text"
             placeholder="Enter mobile number"
             name="mobileNo"
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
@@ -100,7 +103,7 @@ const RegisterForm = () => {
             type="text"
             placeholder="Enter password"
             name="password"
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
@@ -110,7 +113,7 @@ const RegisterForm = () => {
             type="text"
             placeholder="Enter jersey number"
             name="jerseyNo"
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
@@ -120,7 +123,7 @@ const RegisterForm = () => {
             type="text"
             placeholder="Enter city"
             name="city"
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
@@ -130,7 +133,7 @@ const RegisterForm = () => {
             type="text"
             placeholder="Enter state"
             name="state"
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
@@ -140,14 +143,14 @@ const RegisterForm = () => {
             type="date"
             placeholder="Enter birth date"
             name="DOB"
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             onChange={onChangeHandler}
           />
         </div>
         <div className="w-[100%] text-center">
           <select
             value={formData.playingRole}
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             name="playingRole"
             onChange={onChangeHandler}
           >
@@ -168,7 +171,7 @@ const RegisterForm = () => {
         <div className="w-[100%] text-center">
           <select
             value={formData.battingStyle}
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             name="battingStyle"
             onChange={onChangeHandler}
           >
@@ -182,7 +185,7 @@ const RegisterForm = () => {
         <div className="w-[100%] text-center">
           <select
             value={formData.bowlingStyle}
-            className="lg:w-[50%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             name="bowlingStyle"
             onChange={onChangeHandler}
           >
