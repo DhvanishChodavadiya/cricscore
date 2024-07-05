@@ -31,7 +31,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const emailExist = await User.findOne({ email });
   if (emailExist) {
-    throw new apiError(400, "Email already exist, try different email.");
+    // throw new apiError(400, "Email already exist, try different email.");
+    return res.json({status:400, message: "Email already exist, try different email."});
   }
   const mobileNoExist = await User.findOne({ mobileNo });
   if (mobileNoExist) {

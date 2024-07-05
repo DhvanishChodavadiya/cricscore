@@ -4,7 +4,7 @@ import logo from "../assets/logo.png";
 import axios from "axios";
 
 const RegisterForm = () => {
-  const [error,setError] = useState([]);
+  const [error, setError] = useState([]);
   const [formData, setFormData] = useState({
     email: "",
     fullName: "",
@@ -47,19 +47,26 @@ const RegisterForm = () => {
     await axios
       .post("/api/v1/user/register", formData)
       .then((response) => {
-        setFormData({
-          email: "",
-          mobileNo: "",
-          password: "",
-          fullName: "",
-        });
-        alert(response.data.message);
-        console.log(response.data.message);
+        // console.log(response);
+        if(response.data.status === 200){
+          setFormData({
+            email: "",
+            mobileNo: "",
+            password: "",
+            fullName: "",
+          });
+          alert(response.data.message);
+          console.log(response.data.message);
+        }
+        if (response.data.status !== 200) {
+          setError(response.data.message);
+          console.log(error);
+        }
       })
-      .catch((err) => {
-        setError(err)
-        console.log(error);
-      });
+      // .catch((err) => {
+      //   setError(err);
+      //   console.log(error);
+      // });
   };
   return (
     <div className="h-[100vh] w-[100%] lg:flex lg:justify-center items-center">
