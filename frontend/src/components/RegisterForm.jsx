@@ -1,10 +1,10 @@
 import { useState } from "react";
 import logo from "../assets/logo.png";
 // import { FcAddImage } from "react-icons/fc";
-import axios from "axios";
+// import axios from "axios";
 
 const RegisterForm = () => {
-  const [error, setError] = useState([]);
+  // const [error, setError] = useState([]);
   const [formData, setFormData] = useState({
     email: "",
     fullName: "",
@@ -44,25 +44,48 @@ const RegisterForm = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     console.log(formData);
-    await axios
-      .post("/api/v1/user/register", formData)
-      .then((response) => {
-        // console.log(response);
-        if(response.data.status === 200){
-          setFormData({
-            email: "",
-            mobileNo: "",
-            password: "",
-            fullName: "",
-          });
-          alert(response.data.message);
-          console.log(response.data.message);
-        }
-        if (response.data.status !== 200) {
-          setError(response.data.message);
-          console.log(error);
-        }
+    try {
+      const response = await fetch("/api/v1/user/register",{
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json"
+          }
       })
+      console.log(response);
+      // const response = await axios.post("/api/v1/user/register",formData)
+      // console.log(response);
+      // if (response) {
+      //   setFormData({
+      //     email: "",
+      //     mobileNo: "",
+      //     password: "",
+      //     fullName: "",
+      //   })
+      // }
+    } catch (err) {
+      // setError(err)
+      console.error(err);
+    }
+    // await axios
+    //   .post("/api/v1/user/register", formData)
+    //   .then((response) => {
+    //     // console.log(response);
+    //     if(response.data.status === 200){
+    //       setFormData({
+            // email: "",
+            // mobileNo: "",
+            // password: "",
+            // fullName: "",
+    //       });
+    //       alert(response.data.message);
+    //       console.log(response.data.message);
+    //     }
+    //     if (response.data.status !== 200) {
+    //       setError(response.data.message);
+    //       console.log(error);
+    //     }
+    //   })
       // .catch((err) => {
       //   setError(err);
       //   console.log(error);
