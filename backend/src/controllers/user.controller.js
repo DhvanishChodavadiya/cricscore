@@ -19,7 +19,7 @@ const generateAccessTokenAndRefreshToken = async(userId) => {
   }
 }
 
-const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res ,next) => {
   const { email, fullName, mobileNo, password } = req.body;
   if ([email, fullName, mobileNo, password].some((field) => field === "")) {
     throw new apiError(400, "All fields are required.");
@@ -28,11 +28,9 @@ const registerUser = asyncHandler(async (req, res) => {
   const emailExist = await User.findOne({ email });
   if (emailExist) {
     throw new apiError(400, "Email already exist, try different email.");
-    // return res.json({status:400, message: "Email already exist, try different email."});
   }
   const mobileNoExist = await User.findOne({ mobileNo });
   if (mobileNoExist) {
-    // return res.json(error(400,"Mobile number already exist."))
     throw new apiError(
       400,
       "Mobile number already exist, try different mobile number."

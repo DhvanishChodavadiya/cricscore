@@ -14,6 +14,9 @@ app.use(express.static("public"));
 app.use(cookieparser());
 
 import userRouter from "./routes/user.route.js";
+import error from "./middlewares/error.middleware.js";
 app.use("/api/v1/user",userRouter);
 
 export { app }
+
+app.use(error);

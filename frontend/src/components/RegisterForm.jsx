@@ -1,10 +1,15 @@
 import { useState } from "react";
 import logo from "../assets/logo.png";
 // import { FcAddImage } from "react-icons/fc";
-// import axios from "axios";
+import axios from "axios";
 
 const RegisterForm = () => {
-  // const [error, setError] = useState([]);
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [mobileError, setMobileError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [registered,setRegistered] = useState("");
+
   const [formData, setFormData] = useState({
     email: "",
     fullName: "",
@@ -44,52 +49,44 @@ const RegisterForm = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     console.log(formData);
+    setError("");
+    setMobileError("");
+    setEmailError("");
+    setPasswordError("");
     try {
-      const response = await fetch("/api/v1/user/register",{
-          method: "POST",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json"
-          }
-      })
+      const response = await axios.post("/api/v1/user/register", formData);
       console.log(response);
-      // const response = await axios.post("/api/v1/user/register",formData)
-      // console.log(response);
-      // if (response) {
-      //   setFormData({
-      //     email: "",
-      //     mobileNo: "",
-      //     password: "",
-      //     fullName: "",
-      //   })
-      // }
+      if (response) {
+        setRegistered(response.data.message);
+        setFormData({
+          email: "",
+          mobileNo: "",
+          password: "",
+          fullName: "",
+        });
+        setError("");
+        setMobileError("");
+        setEmailError("");
+        setPasswordError("");
+      }
     } catch (err) {
-      // setError(err)
-      console.error(err);
+      if (err.response.data.message == "All fields are required.") {
+        setError(err.response.data.message);
+        console.error(error);
+      }
+      if (err.response.data.message == "Email already exist, try different email.") {
+        setEmailError(err.response.data.message)
+        console.error(emailError);
+      }
+      if (err.response.data.message == "Mobile number already exist, try different mobile number.") {
+        setMobileError(err.response.data.message)
+        console.error(mobileError);
+      }
+      if (err.response.data.message == "Password should be between 8 and 16 characters.") {
+        setPasswordError(err.response.data.message)
+        console.error(passwordError);
+      }
     }
-    // await axios
-    //   .post("/api/v1/user/register", formData)
-    //   .then((response) => {
-    //     // console.log(response);
-    //     if(response.data.status === 200){
-    //       setFormData({
-            // email: "",
-            // mobileNo: "",
-            // password: "",
-            // fullName: "",
-    //       });
-    //       alert(response.data.message);
-    //       console.log(response.data.message);
-    //     }
-    //     if (response.data.status !== 200) {
-    //       setError(response.data.message);
-    //       console.log(error);
-    //     }
-    //   })
-      // .catch((err) => {
-      //   setError(err);
-      //   console.log(error);
-      // });
   };
   return (
     <div className="h-[100vh] w-[100%] lg:flex lg:justify-center items-center">
@@ -103,7 +100,7 @@ const RegisterForm = () => {
             type="text"
             placeholder="Enter email"
             name="email"
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className={!error && !emailError ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black" : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"}
             onChange={onChangeHandler}
           />
         </div>
@@ -113,7 +110,7 @@ const RegisterForm = () => {
             type="text"
             placeholder="Enter full name"
             name="fullName"
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className={!error ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black" : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"}
             onChange={onChangeHandler}
           />
         </div>
@@ -123,7 +120,7 @@ const RegisterForm = () => {
             type="text"
             placeholder="Enter mobile number"
             name="mobileNo"
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className={!error && !mobileError ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black" : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"}
             onChange={onChangeHandler}
           />
         </div>
@@ -133,7 +130,7 @@ const RegisterForm = () => {
             type="text"
             placeholder="Enter password"
             name="password"
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            className={!error && !passwordError ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black" : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"}
             onChange={onChangeHandler}
           />
         </div>
@@ -274,6 +271,41 @@ const RegisterForm = () => {
             onChange={onImageChangeHandler}
           />
         </div> */}
+        {error && (
+          <div className="w-[100%] flex justify-center">
+            <p className="lg:w-[65%] lg:p-3 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 text-red-800 bg-red-400">
+              {error}
+            </p>
+          </div>
+        )}
+        {emailError && (
+          <div className="w-[100%] flex justify-center">
+            <p className="lg:w-[65%] lg:p-3 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 text-red-800 bg-red-400">
+              {emailError}
+            </p>
+          </div>
+        )}
+        {mobileError && (
+          <div className="w-[100%] flex justify-center">
+            <p className="lg:w-[65%] lg:p-3 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 text-red-800 bg-red-400">
+              {mobileError}
+            </p>
+          </div>
+        )}
+        {passwordError && (
+          <div className="w-[100%] flex justify-center">
+            <p className="lg:w-[65%] lg:p-3 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 text-red-800 bg-red-400">
+              {passwordError}
+            </p>
+          </div>
+        )}
+        {registered && (
+          <div className="w-[100%] flex justify-center">
+            <p className="lg:w-[65%] lg:p-3 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 text-green-800 bg-green-400">
+              {registered}
+            </p>
+          </div>
+        )}
         <div className="flex justify-center mt-2">
           <button className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white mb-4">
             Register
