@@ -36,6 +36,9 @@ const registerUser = asyncHandler(async (req, res ,next) => {
       "Mobile number already exist, try different mobile number."
     );
   }
+  if (mobileNo.trim().length != 10) {
+    throw new apiError(400,"Mobile number should be 10 digits.")
+  }
 
   if (password.trim().length < 8 || password.trim().length > 16) {
     throw new apiError(400,"Password should be between 8 and 16 characters.")
@@ -87,17 +90,17 @@ const registerUser = asyncHandler(async (req, res ,next) => {
 const loginUser = asyncHandler(async(req,res) => {
     const {email, mobileNo, password} = req.body;
     if (!email && !mobileNo) {
-        throw new apiError(400,"Email or mobile number is required for login.")
+        throw new apiError(400,"All fields are required.")
     }
     if (!password) {
-        throw new apiError(400,"Password is required.")
+        throw new apiError(400,"All fields are required.")
     }
 
     const user = await User.findOne({
         $or: [{email},{mobileNo}]
     })
     if (!user) {
-        throw new apiError(404,"User is not available with this email or mobile number.")
+        throw new apiError(404,"User is not found with this email.")
     }
 
     const isPasswordValid = await user.isPasswordCorrect(password);

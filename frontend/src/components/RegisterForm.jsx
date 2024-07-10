@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import logo from "../assets/logo.png";
 // import { FcAddImage } from "react-icons/fc";
 import axios from "axios";
@@ -8,7 +8,8 @@ const RegisterForm = () => {
   const [emailError, setEmailError] = useState("");
   const [mobileError, setMobileError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [registered,setRegistered] = useState("");
+  const [registeredOrLoggedin, setRegisteredOrLoggedin] = useState("");
+  const [isRegistered, setIsRegistered] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -46,6 +47,16 @@ const RegisterForm = () => {
   //   console.log(formData);
   // };
 
+  useEffect(() => {
+    setEmailError("");
+    setMobileError("");
+    setPasswordError("");
+    setError("");
+    setTimeout(() => {
+      setRegisteredOrLoggedin("");
+    }, 2000);
+  }, [isRegistered]);
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     console.log(formData);
@@ -57,7 +68,8 @@ const RegisterForm = () => {
       const response = await axios.post("/api/v1/user/register", formData);
       console.log(response);
       if (response) {
-        setRegistered(response.data.message);
+        setIsRegistered(true);
+        setRegisteredOrLoggedin(response.data.message);
         setFormData({
           email: "",
           mobileNo: "",
@@ -74,63 +86,131 @@ const RegisterForm = () => {
         setError(err.response.data.message);
         console.error(error);
       }
-      if (err.response.data.message == "Email already exist, try different email.") {
-        setEmailError(err.response.data.message)
+      if (
+        err.response.data.message == "Email already exist, try different email."
+      ) {
+        setEmailError(err.response.data.message);
         console.error(emailError);
       }
-      if (err.response.data.message == "Mobile number already exist, try different mobile number.") {
-        setMobileError(err.response.data.message)
+      if (
+        err.response.data.message ==
+        "Mobile number already exist, try different mobile number."
+      ) {
+        setMobileError(err.response.data.message);
         console.error(mobileError);
       }
-      if (err.response.data.message == "Password should be between 8 and 16 characters.") {
-        setPasswordError(err.response.data.message)
+      if (err.response.data.message == "Mobile number should be 10 digits.") {
+        setMobileError(err.response.data.message);
+      }
+      if (
+        err.response.data.message ==
+        "Password should be between 8 and 16 characters."
+      ) {
+        setPasswordError(err.response.data.message);
         console.error(passwordError);
       }
     }
   };
+
+  const onLoginHandler = async(e) => {
+    e.preventDefault();
+    const response = await axios.post("/api/v1/user/login",formData);
+    try {
+      if (response) {
+        setRegisteredOrLoggedin(response.data.message);
+        setFormData({
+          email: "",
+          password: ""
+        });
+        setEmailError("");
+        setPasswordError("");
+        setError("");
+      }
+    } catch (err) {
+        if (err.response.data.message == "All fields are required.") {
+          setError(err.response.data.message);
+        }
+        if (err.response.data.message == "User is not found with this email.") {
+          setEmailError(err.response.data.message);
+        }
+        if (err.response.data.message == "Invalid password.") {
+          setPasswordError(err.response.data.message);
+        }
+    }
+  };
+
   return (
     <div className="h-[100vh] w-[100%] lg:flex lg:justify-center items-center">
       <div className="w-[100%]  lg:flex lg:justify-center">
         <img src={logo} className="lg:w-[100%]" />
       </div>
-      <form className="w-[100%]" onSubmit={onSubmitHandler}>
+      <form className="w-[100%]">
+        <h1 className="w-[100%] text-center mb-5 text-3xl font-semibold text-blue-600">
+          {!isRegistered ? "Register" : "Login"}
+        </h1>
         <div className="w-[100%] text-center">
           <input
             value={formData.email}
             type="text"
             placeholder="Enter email"
             name="email"
-            className={!error && !emailError ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black" : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"}
+            className={
+              !error && !emailError
+                ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+                : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"
+            }
             onChange={onChangeHandler}
           />
         </div>
-        <div className="w-[100%] text-center">
-          <input
-            value={formData.fullName}
-            type="text"
-            placeholder="Enter full name"
-            name="fullName"
-            className={!error ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black" : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"}
-            onChange={onChangeHandler}
-          />
-        </div>
-        <div className="w-[100%] text-center">
-          <input
-            value={formData.mobileNo}
-            type="text"
-            placeholder="Enter mobile number"
-            name="mobileNo"
-            className={!error && !mobileError ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black" : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"}
-            onChange={onChangeHandler}
-          />
-        </div>
+        {!isRegistered && (
+          <div className="w-[100%] text-center">
+            <input
+              value={formData.fullName}
+              type="text"
+              placeholder="Enter full name"
+              name="fullName"
+              className={
+                !error
+                  ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+                  : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"
+              }
+              onChange={onChangeHandler}
+            />
+          </div>
+        )}
+        {!isRegistered && (
+          <div className="w-[100%] flex justify-center">
+            <input
+              readOnly
+              value="+91"
+              type="text"
+              className="mr-[2%] lg:w-[10%] lg:p-3 border-2 border-gray-500 w-[15%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+            />
+            <input
+              value={formData.mobileNo}
+              type="text"
+              placeholder="Enter mobile number"
+              name="mobileNo"
+              className={
+                !error && !mobileError
+                  ? "lg:w-[53%] lg:p-3 border-2 border-gray-500 w-[73%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+                  : "lg:w-[53%] lg:p-3 border-[3px] border-red-600 w-[73%] p-4 rounded font-mono text-xl mb-4 mt-2"
+              }
+              onChange={onChangeHandler}
+            />
+          </div>
+        )}
         <div className="w-[100%] text-center">
           <input
             value={formData.password}
             type="text"
             placeholder="Enter password"
             name="password"
-            className={!error && !passwordError ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black" : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"}
+            className={
+              !error && !passwordError
+                ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+                : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"
+            }
             onChange={onChangeHandler}
           />
         </div>
@@ -262,8 +342,8 @@ const RegisterForm = () => {
             />
             Other
           </label>
-        </div> */}
-        {/* <div className="w-[100%] flex justify-center">
+        </div> 
+         <div className="w-[100%] flex justify-center">
           <FcAddImage className="text-3xl mt-2" />
           <input
             type="file"
@@ -299,18 +379,30 @@ const RegisterForm = () => {
             </p>
           </div>
         )}
-        {registered && (
+        {registeredOrLoggedin && (
           <div className="w-[100%] flex justify-center">
             <p className="lg:w-[65%] lg:p-3 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 text-green-800 bg-green-400">
-              {registered}
+              {registeredOrLoggedin}
             </p>
           </div>
         )}
         <div className="flex justify-center mt-2">
-          <button className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white mb-4">
-            Register
+          <button
+            className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white mb-4"
+            onClick={!isRegistered ? onSubmitHandler : onLoginHandler}
+          >
+            {!isRegistered ? "Register" : "Login"}
           </button>
         </div>
+        {!isRegistered ? (
+          <div className="w-full text-center font-mono text-blue-600">
+            <p onClick={() => setIsRegistered(true)}>Already have a user?</p>
+          </div>
+        ) : (
+          <div className="w-full text-center font-mono text-blue-600">
+            <p onClick={() => setIsRegistered(false)}>Dont have an account?</p>
+          </div>
+        )}
       </form>
     </div>
   );
