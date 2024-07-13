@@ -10,6 +10,7 @@ const RegisterForm = () => {
   const [passwordError, setPasswordError] = useState("");
   const [registeredOrLoggedin, setRegisteredOrLoggedin] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
+  const [loadind, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -58,6 +59,7 @@ const RegisterForm = () => {
   }, [isRegistered]);
 
   const onSubmitHandler = async (e) => {
+    setLoading(true);
     e.preventDefault();
     console.log(formData);
     setError("");
@@ -68,6 +70,7 @@ const RegisterForm = () => {
       const response = await axios.post("/api/v1/user/register", formData);
       console.log(response);
       if (response) {
+        setLoading(false);
         setIsRegistered(true);
         setRegisteredOrLoggedin(response.data.message);
         setFormData({
@@ -82,6 +85,7 @@ const RegisterForm = () => {
         setPasswordError("");
       }
     } catch (err) {
+      setLoading(false);
       if (err.response.data.message == "All fields are required.") {
         setError(err.response.data.message);
         console.error(error);
@@ -112,30 +116,36 @@ const RegisterForm = () => {
     }
   };
 
-  const onLoginHandler = async(e) => {
+  const onLoginHandler = async (e) => {
     e.preventDefault();
-    const response = await axios.post("/api/v1/user/login",formData);
+    setLoading(true);
+    setError("");
+    setEmailError("");
+    setPasswordError("");
     try {
+      const response = await axios.post("/api/v1/user/login", formData);
       if (response) {
+        setLoading(false);
         setRegisteredOrLoggedin(response.data.message);
         setFormData({
           email: "",
-          password: ""
+          password: "",
         });
         setEmailError("");
         setPasswordError("");
         setError("");
       }
     } catch (err) {
-        if (err.response.data.message == "All fields are required.") {
-          setError(err.response.data.message);
-        }
-        if (err.response.data.message == "User is not found with this email.") {
-          setEmailError(err.response.data.message);
-        }
-        if (err.response.data.message == "Invalid password.") {
-          setPasswordError(err.response.data.message);
-        }
+      setLoading(false);
+      if (err.response.data.message == "All fields are required.") {
+        setError(err.response.data.message);
+      }
+      if (err.response.data.message == "User is not found with this email.") {
+        setEmailError(err.response.data.message);
+      }
+      if (err.response.data.message == "Invalid password.") {
+        setPasswordError(err.response.data.message);
+      }
     }
   };
 
@@ -351,6 +361,7 @@ const RegisterForm = () => {
             onChange={onImageChangeHandler}
           />
         </div> */}
+
         {error && (
           <div className="w-[100%] flex justify-center">
             <p className="lg:w-[65%] lg:p-3 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 text-red-800 bg-red-400">
@@ -386,21 +397,59 @@ const RegisterForm = () => {
             </p>
           </div>
         )}
-        <div className="flex justify-center mt-2">
-          <button
-            className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white mb-4"
-            onClick={!isRegistered ? onSubmitHandler : onLoginHandler}
+        {!loadind ? (
+          <div
+            className={
+              error ||
+              emailError ||
+              mobileError ||
+              passwordError ||
+              registeredOrLoggedin
+                ? "flex justify-center mt-2"
+                : "flex justify-center mt-24"
+            }
           >
-            {!isRegistered ? "Register" : "Login"}
-          </button>
-        </div>
-        {!isRegistered ? (
-          <div className="w-full text-center font-mono text-blue-600">
-            <p onClick={() => setIsRegistered(true)}>Already have a user?</p>
+            <button
+              className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white"
+              onClick={!isRegistered ? onSubmitHandler : onLoginHandler}
+            >
+              {!isRegistered ? "Register" : "Login"}
+            </button>
           </div>
         ) : (
-          <div className="w-full text-center font-mono text-blue-600">
-            <p onClick={() => setIsRegistered(false)}>Dont have an account?</p>
+          <div
+            className={
+              error ||
+              emailError ||
+              mobileError ||
+              passwordError ||
+              registeredOrLoggedin
+                ? "flex justify-center mt-2"
+                : "flex justify-center mt-24"
+            }
+          >
+            <button
+              className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white"
+              onClick={!isRegistered ? onSubmitHandler : onLoginHandler}
+            >
+              Wait...
+            </button>
+          </div>
+        )}
+        {!isRegistered ? (
+          <div className="w-full text-center font-mono text-blue-600 mt-4">
+            <p className="cursor-pointer" onClick={() => setIsRegistered(true)}>
+              Already have a user?
+            </p>
+          </div>
+        ) : (
+          <div className="w-full text-center font-mono text-blue-600 mt-4">
+            <p
+              className="cursor-pointer"
+              onClick={() => setIsRegistered(false)}
+            >
+              Dont have an account?
+            </p>
           </div>
         )}
       </form>
