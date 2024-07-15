@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import logo from "../assets/logo.png";
-// import { FcAddImage } from "react-icons/fc";
 import axios from "axios";
+import spinner from "../assets/spinner.gif";
 
 const RegisterForm = () => {
   const [error, setError] = useState("");
@@ -158,73 +158,79 @@ const RegisterForm = () => {
         <h1 className="w-[100%] text-center mb-5 text-3xl font-semibold text-blue-600">
           {!isRegistered ? "Register" : "Login"}
         </h1>
-        <div className="w-[100%] text-center">
-          <input
-            value={formData.email}
-            type="text"
-            placeholder="Enter email"
-            name="email"
-            className={
-              !error && !emailError
-                ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-                : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"
-            }
-            onChange={onChangeHandler}
-          />
-        </div>
-        {!isRegistered && (
-          <div className="w-[100%] text-center">
-            <input
-              value={formData.fullName}
-              type="text"
-              placeholder="Enter full name"
-              name="fullName"
-              className={
-                !error
-                  ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-                  : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"
-              }
-              onChange={onChangeHandler}
-            />
+        {loadind ? (
+          <div className="w-full flex justify-center items-center mt-5">
+            <img src={spinner} className="h-[40px] w-[40px]" />
           </div>
-        )}
-        {!isRegistered && (
-          <div className="w-[100%] flex justify-center">
-            <input
-              readOnly
-              value="+91"
-              type="text"
-              className="mr-[2%] lg:w-[10%] lg:p-3 border-2 border-gray-500 w-[15%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-            />
-            <input
-              value={formData.mobileNo}
-              type="text"
-              placeholder="Enter mobile number"
-              name="mobileNo"
-              className={
-                !error && !mobileError
-                  ? "lg:w-[53%] lg:p-3 border-2 border-gray-500 w-[73%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-                  : "lg:w-[53%] lg:p-3 border-[3px] border-red-600 w-[73%] p-4 rounded font-mono text-xl mb-4 mt-2"
-              }
-              onChange={onChangeHandler}
-            />
-          </div>
-        )}
-        <div className="w-[100%] text-center">
-          <input
-            value={formData.password}
-            type="text"
-            placeholder="Enter password"
-            name="password"
-            className={
-              !error && !passwordError
-                ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-                : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"
-            }
-            onChange={onChangeHandler}
-          />
-        </div>
-        {/* <div className="w-[100%] text-center">
+        ) : (
+          <div>
+            <div className="w-[100%] text-center">
+              <input
+                value={formData.email}
+                type="text"
+                placeholder="Enter email"
+                name="email"
+                className={
+                  !error && !emailError
+                    ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+                    : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"
+                }
+                onChange={onChangeHandler}
+              />
+            </div>
+            {!isRegistered && (
+              <div className="w-[100%] text-center">
+                <input
+                  value={formData.fullName}
+                  type="text"
+                  placeholder="Enter full name"
+                  name="fullName"
+                  className={
+                    !error
+                      ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+                      : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"
+                  }
+                  onChange={onChangeHandler}
+                />
+              </div>
+            )}
+            {!isRegistered && (
+              <div className="w-[100%] flex justify-center">
+                <input
+                  readOnly
+                  value="+91"
+                  type="text"
+                  className="mr-[2%] lg:w-[10%] lg:p-3 border-2 border-gray-500 w-[15%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+                />
+                <input
+                  value={formData.mobileNo}
+                  type="text"
+                  placeholder="Enter mobile number"
+                  name="mobileNo"
+                  className={
+                    !error && !mobileError
+                      ? "lg:w-[53%] lg:p-3 border-2 border-gray-500 w-[73%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+                      : "lg:w-[53%] lg:p-3 border-[3px] border-red-600 w-[73%] p-4 rounded font-mono text-xl mb-4 mt-2"
+                  }
+                  onChange={onChangeHandler}
+                />
+              </div>
+            )}
+            <div className="w-[100%] text-center">
+              <input
+                value={formData.password}
+                type="text"
+                placeholder="Enter password"
+                name="password"
+                className={
+                  !error && !passwordError
+                    ? "lg:w-[65%] lg:p-3 border-2 border-gray-500 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
+                    : "lg:w-[65%] lg:p-3 border-[3px] border-red-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2"
+                }
+                onChange={onChangeHandler}
+              />
+            </div>
+            {/* <div className="w-[100%] text-center">
           <input
             value={formData.jerseyNo}
             type="text"
@@ -361,6 +367,8 @@ const RegisterForm = () => {
             onChange={onImageChangeHandler}
           />
         </div> */}
+          </div>
+        )}
 
         {error && (
           <div className="w-[100%] flex justify-center">
@@ -429,7 +437,7 @@ const RegisterForm = () => {
             }
           >
             <button
-              className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white"
+              className="disabled w-[150px] flex justify-center items-center p-4 font-mono rounded-md bg-blue-600 text-white"
               onClick={!isRegistered ? onSubmitHandler : onLoginHandler}
             >
               Wait...
