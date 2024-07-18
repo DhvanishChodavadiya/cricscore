@@ -72,7 +72,6 @@ const RegisterForm = () => {
     try {
       const response = await axios.post("/api/v1/user/register", formData);
       if (response) {
-        localStorage.setItem("user",JSON.stringify(response.data.data))
         setLoading(false);
         setIsRegistered(true);
         setRegisteredOrLoggedin(response.data.message);
@@ -111,7 +110,7 @@ const RegisterForm = () => {
       }
       if (
         err.response.data.message ==
-        "Password should be between 8 and 16 characters."
+        "Password must be between 8 and 16 characters."
       ) {
         setPasswordError(err.response.data.message);
         console.error(passwordError);
@@ -128,6 +127,10 @@ const RegisterForm = () => {
     try {
       const response = await axios.post("/api/v1/user/login", formData);
       if (response) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify(response.data.data.loggedInUser)
+        );
         setLoading(false);
         setRegisteredOrLoggedin(response.data.message);
         setFormData({
@@ -138,7 +141,7 @@ const RegisterForm = () => {
         setPasswordError("");
         setError("");
         setTimeout(() => {
-          navigate("/Home")
+          navigate("/Home");
         }, 1000);
       }
     } catch (err) {
@@ -231,144 +234,6 @@ const RegisterForm = () => {
               onChange={onChangeHandler}
             />
           </div>
-          {/*
-           <div className="w-[100%] text-center">
-          <input
-            value={formData.jerseyNo}
-            type="text"
-            placeholder="Enter jersey number"
-            name="jerseyNo"
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-            onChange={onChangeHandler}
-          />
-        </div>
-        <div className="w-[100%] text-center">
-          <input
-            value={formData.city}
-            type="text"
-            placeholder="Enter city"
-            name="city"
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-            onChange={onChangeHandler}
-          />
-        </div>
-        <div className="w-[100%] text-center">
-          <input
-            value={formData.state}
-            type="text"
-            placeholder="Enter state"
-            name="state"
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-            onChange={onChangeHandler}
-          />
-        </div>
-        <div className="w-[100%] text-center">
-          <input
-            value={formData.DOB}
-            type="date"
-            placeholder="Enter birth date"
-            name="DOB"
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-            onChange={onChangeHandler}
-          />
-        </div>
-        <div className="w-[100%] text-center">
-          <select
-            value={formData.playingRole}
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-            name="playingRole"
-            onChange={onChangeHandler}
-          >
-            <option value="" className="font-thin text-xl">
-              Select playing role
-            </option>
-            <option value="Top-order batter">Top-order batter</option>
-            <option value="Middle-order batter">Middle-order batter</option>
-            <option value="Wicket-keeper batter">Wicket-keeper batter</option>
-            <option value="Wicket-keeper">Wicket-keeper</option>
-            <option value="Bowler">Bowler</option>
-            <option value="All-rounder">All-rounder</option>
-            <option value="Lower-order batter">Lower-order batter</option>
-            <option value="Opening-batter">Opening-batter</option>
-            <option value="None">None</option>
-          </select>
-        </div>
-        <div className="w-[100%] text-center">
-          <select
-            value={formData.battingStyle}
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-            name="battingStyle"
-            onChange={onChangeHandler}
-          >
-            <option value="" className="font-thin text-xl">
-              Select batting style
-            </option>
-            <option value="Left-hand bat">Left-hand bat</option>
-            <option value="Right-hand bat">Right-hand bat</option>
-          </select>
-        </div>
-        <div className="w-[100%] text-center">
-          <select
-            value={formData.bowlingStyle}
-            className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
-            name="bowlingStyle"
-            onChange={onChangeHandler}
-          >
-            <option value="" className="font-thin text-xl">
-              Select bowling style
-            </option>
-            <option value="Right-arm fast">Right-arm fast</option>
-            <option value="Right-arm medium">Right-arm medium</option>
-            <option value="Left-arm fast">Left-arm fast</option>
-            <option value="Left-arm medium">Left-arm medium</option>
-            <option value="Slow left-arm orthodox">
-              Slow left-arm orthodox
-            </option>
-            <option value="Slow left-arm chinaman">
-              Slow left-arm chinaman
-            </option>
-            <option value="Right-arm Off Break">Right-arm Off Break</option>
-            <option value="Right-arm Leg Break">Right-arm Leg Break</option>
-            <option value="None">None</option>
-          </select>
-        </div>
-        <div className="w-[100%] flex justify-center">
-          <label className="font-mono text-2xl pr-4">
-            <input
-              type="radio"
-              name="gender"
-              value="Male"
-              onChange={onChangeHandler}
-            />
-            Male
-          </label>
-          <label className="font-mono text-2xl pr-4">
-            <input
-              type="radio"
-              name="gender"
-              value="Female"
-              onChange={onChangeHandler}
-            />
-            Female
-          </label>
-          <label className="font-mono text-2xl pr-4">
-            <input
-              type="radio"
-              name="gender"
-              value="Other"
-              onChange={onChangeHandler}
-            />
-            Other
-          </label>
-        </div> 
-         <div className="w-[100%] flex justify-center">
-          <FcAddImage className="text-3xl mt-2" />
-          <input
-            type="file"
-            className="mb-4 mt-2 ml-3"
-            onChange={onImageChangeHandler}
-          />
-        </div> */}
         </div>
 
         {loadind ? (
@@ -446,9 +311,7 @@ const RegisterForm = () => {
                 : "flex justify-center mt-24"
             }
           >
-            <button
-              className="opacity-50 cursor-not-allowed w-[150px] flex justify-center items-center p-4 font-mono rounded-md bg-blue-600 text-white"
-            >
+            <button className="opacity-50 cursor-not-allowed w-[150px] flex justify-center items-center p-4 font-mono rounded-md bg-blue-600 text-white">
               Wait...
             </button>
           </div>

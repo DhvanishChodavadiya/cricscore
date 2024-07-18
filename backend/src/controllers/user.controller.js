@@ -6,20 +6,20 @@ import { deleteOnCloudinary } from "../utils/deleteOnCloudinary.util.js";
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
-const generateAccessTokenAndRefreshToken = async(userId) => {
+const generateAccessTokenAndRefreshToken = async (userId) => {
   try {
-    const user = await User.findById(userId)
+    const user = await User.findById(userId);
     const accessToken = await user.generateAccessToken();
     const refreshToken = await user.generateRefreshToken();
     user.refreshToken = refreshToken;
-    await user.save({validateBeforeSave: false})
-    return { accessToken,refreshToken }
+    await user.save({ validateBeforeSave: false });
+    return { accessToken, refreshToken };
   } catch (error) {
-    throw new apiError(500,"Something went wrong.")
+    throw new apiError(500, "Something went wrong.");
   }
-}
+};
 
-const registerUser = asyncHandler(async (req, res ,next) => {
+const registerUser = asyncHandler(async (req, res, next) => {
   const { email, fullName, mobileNo, password } = req.body;
   if ([email, fullName, mobileNo, password].some((field) => field === "")) {
     throw new apiError(400, "All fields are required.");
@@ -37,11 +37,11 @@ const registerUser = asyncHandler(async (req, res ,next) => {
     );
   }
   if (mobileNo.trim().length != 10) {
-    throw new apiError(400,"Mobile number should be 10 digits.")
+    throw new apiError(400, "Mobile number should be 10 digits.");
   }
 
   if (password.trim().length < 8 || password.trim().length > 16) {
-    throw new apiError(400,"Password should be between 8 and 16 characters.")
+    throw new apiError(400, "Password must be between 8 and 16 characters.");
   }
 
   // let profilePhotoLocalPath;
@@ -87,113 +87,155 @@ const registerUser = asyncHandler(async (req, res ,next) => {
     .json(new apiResponse(200, createdUser, "User registered successfully."));
 });
 
-const loginUser = asyncHandler(async(req,res) => {
-    const {email, mobileNo, password} = req.body;
-    if (!email && !mobileNo) {
-        throw new apiError(400,"All fields are required.")
-    }
-    if (!password) {
-        throw new apiError(400,"All fields are required.")
-    }
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, mobileNo, password } = req.body;
+  if (!email && !mobileNo) {
+    throw new apiError(400, "All fields are required.");
+  }
+  if (!password) {
+    throw new apiError(400, "All fields are required.");
+  }
 
-    const user = await User.findOne({
-        $or: [{email},{mobileNo}]
-    })
-    if (!user) {
-        throw new apiError(404,"User is not found with this email.")
-    }
+  const user = await User.findOne({
+    $or: [{ email }, { mobileNo }],
+  });
+  if (!user) {
+    throw new apiError(404, "User is not found with this email.");
+  }
 
-    const isPasswordValid = await user.isPasswordCorrect(password);
-    if (!isPasswordValid) {
-        throw new apiError(400,"Invalid password.")
-    }
+  const isPasswordValid = await user.isPasswordCorrect(password);
+  if (!isPasswordValid) {
+    throw new apiError(400, "Invalid password.");
+  }
 
-    const { accessToken,refreshToken } = await generateAccessTokenAndRefreshToken(user._id)
+  const { accessToken, refreshToken } =
+    await generateAccessTokenAndRefreshToken(user._id);
 
-    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
 
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
 
-    return res.status(200)
-    .cookie("accessToken",accessToken,options)
-    .cookie("refreshToken",refreshToken,options)
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
     .json(
-        new apiResponse(
-            200,
-            {
-                loggedInUser,
-                accessToken,
-                refreshToken
-            },
-            "User logged in successfully."
-        )
-    )
-})
+      new apiResponse(
+        200,
+        {
+          loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User logged in successfully."
+      )
+    );
+});
 
-const logoutUser = asyncHandler(async(req,res) => {
+const logoutUser = asyncHandler(async (req, res) => {
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {
-      refreshToken: 1
+      refreshToken: 1,
     },
+    {
+      new: true,
+    }
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new apiResponse(200, {}, "User logged out successfully."));
+});
+
+const updateProfile = asyncHandler(async (req, res) => {
+  const {
+    jerseyNo,
+    city,
+    state,
+    DOB,
+    playingRole,
+    battingStyle,
+    bowlingStyle,
+    gender,
+  } = req.body;
+  const user = await User.findByIdAndUpdate(req.user._id, {
+    $set: {
+      jerseyNo,
+      city,
+      state,
+      DOB,
+      playingRole,
+      battingStyle,
+      bowlingStyle,
+      gender,
+    }}
+    ,
     {
       new: true
     }
-  )
-
-  const options = {
-    httpOnly: true,
-    secure: true
-  }
+  );
 
   return res.status(200)
-  .clearCookie("accessToken",options)
-  .clearCookie("refreshToken",options)
   .json(
     new apiResponse(
       200,
-      {},
-      "User logged out successfully."
+      user,
+      "User profile updated successfully."
     )
   )
-})
+});
 
-const newAccessToken = asyncHandler(async(req,res) => {
+const newAccessToken = asyncHandler(async (req, res) => {
   const inComingRefreshToken = req.cookies.refreshToken;
   if (!inComingRefreshToken) {
-    throw new apiError(400,"Unauthorized request.")
+    throw new apiError(400, "Unauthorized request.");
   }
 
-  const decodedToken = jwt.verify(inComingRefreshToken,process.env.REFRESH_TOKEN_SECRET)
+  const decodedToken = jwt.verify(
+    inComingRefreshToken,
+    process.env.REFRESH_TOKEN_SECRET
+  );
 
-  const user = await User.findById(decodedToken._id)
+  const user = await User.findById(decodedToken._id);
   if (inComingRefreshToken !== user?.refreshToken) {
-    throw new apiError(400,"Unauthorized request.")
+    throw new apiError(400, "Unauthorized request.");
   }
 
-  const { accessToken, newRefreshToken} = await generateAccessTokenAndRefreshToken(user._id)
+  const { accessToken, newRefreshToken } =
+    await generateAccessTokenAndRefreshToken(user._id);
 
   const options = {
     httpOnly: true,
-    secure: true
-  }
+    secure: true,
+  };
 
-  return res.status(200)
-  .cookie("accessToken",accessToken,options)
-  .cookie("refreshToken",newRefreshToken,options)
-  .json(
-    new apiResponse(
-      200,
-      {
-        accessToken,
-        refreshToken: newRefreshToken
-      },
-      "Access refreshed successfully."
-    )
-  )
-})
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", newRefreshToken, options)
+    .json(
+      new apiResponse(
+        200,
+        {
+          accessToken,
+          refreshToken: newRefreshToken,
+        },
+        "Access refreshed successfully."
+      )
+    );
+});
 
-export { registerUser,loginUser,logoutUser,newAccessToken };
+export { registerUser, loginUser, logoutUser, newAccessToken, updateProfile };
