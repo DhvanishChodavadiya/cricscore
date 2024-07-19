@@ -162,6 +162,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const updateProfile = asyncHandler(async (req, res) => {
   const {
+    fullName,
     jerseyNo,
     city,
     state,
@@ -173,6 +174,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   } = req.body;
   const user = await User.findByIdAndUpdate(req.user._id, {
     $set: {
+      fullName,
       jerseyNo,
       city,
       state,

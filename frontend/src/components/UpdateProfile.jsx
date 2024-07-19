@@ -1,16 +1,55 @@
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const UpdateProfile = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    fullName: "",
+    mobileNo: "",
+    jerseyNo: "",
+    city: "",
+    state: "",
+    DOB: "",
+    playingRole: "",
+    battingStyle: "",
+    bowlingStyle: "",
+    gender: ""
+  });
 
-    const onChangeHandler = (e) => {
-        e.preventDefault();
+  useEffect(() => {
+    const users = localStorage.getItem("user");
+    const user = JSON.parse(users);
+    setFormData({
+      email: user.email,
+      mobileNo: user.mobileNo,
+      fullName: user.fullName,
+    });
+  }, []);
+
+  const onChangeHandler = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }))
+  };
+
+  const onSubmitHandler = async(e) => {
+    e.preventDefault();
+    console.log(formData);
+    try {
+      const response = await axios.post("/api/v1/user/updateProfile",formData);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
     }
+  }
 
   return (
     <div>
       <form>
         <div className="w-[100%] text-center">
           <input
-            value=""
+            readOnly
+            value={formData.email}
             type="text"
             placeholder="Enter email"
             name="email"
@@ -20,7 +59,7 @@ const UpdateProfile = () => {
         </div>
         <div className="w-[100%] text-center">
           <input
-            value=""
+            value={formData.fullName}
             type="text"
             placeholder="Enter full name"
             name="fullName"
@@ -36,7 +75,8 @@ const UpdateProfile = () => {
             className="mr-[2%] lg:w-[10%] lg:p-3 border-2 border-gray-500 w-[15%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
           />
           <input
-            value=""
+            readOnly
+            value={formData.mobileNo}
             type="text"
             placeholder="Enter mobile number"
             name="mobileNo"
@@ -46,7 +86,7 @@ const UpdateProfile = () => {
         </div>
         <div className="w-[100%] text-center">
           <input
-            value=""
+            value={formData.jerseyNo}
             type="text"
             placeholder="Enter jersey number"
             name="jerseyNo"
@@ -56,7 +96,7 @@ const UpdateProfile = () => {
         </div>
         <div className="w-[100%] text-center">
           <input
-            value=""
+            value={formData.city}
             type="text"
             placeholder="Enter city"
             name="city"
@@ -66,7 +106,7 @@ const UpdateProfile = () => {
         </div>
         <div className="w-[100%] text-center">
           <input
-            value=""
+            value={formData.state}
             type="text"
             placeholder="Enter state"
             name="state"
@@ -76,10 +116,10 @@ const UpdateProfile = () => {
         </div>
         <div className="w-[100%] text-center">
           <input
-            value=""
+            value={formData.DOB}
             type="text"
             onFocus={(e) => (e.target.type = "date")}
-            onBlur={(e) =>( e.target.type = "text")}
+            onBlur={(e) => (e.target.type = "text")}
             placeholder="Enter birth date"
             name="DOB"
             className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
@@ -88,12 +128,12 @@ const UpdateProfile = () => {
         </div>
         <div className="w-[100%] text-center">
           <select
-            value=""
+            value={formData.playingRole}
             className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             name="playingRole"
             onChange={onChangeHandler}
           >
-            <option value="" className="font-thin text-xl">
+            <option selected hidden value="none" className="font-thin text-xl">
               Select playing role
             </option>
             <option value="Top-order batter">Top-order batter</option>
@@ -109,12 +149,12 @@ const UpdateProfile = () => {
         </div>
         <div className="w-[100%] text-center">
           <select
-            value=""
+            value={formData.battingStyle}
             className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             name="battingStyle"
             onChange={onChangeHandler}
           >
-            <option value="" className="font-thin text-xl">
+            <option selected hidden value="" className="font-thin text-xl">
               Select batting style
             </option>
             <option value="Left-hand bat">Left-hand bat</option>
@@ -123,12 +163,12 @@ const UpdateProfile = () => {
         </div>
         <div className="w-[100%] text-center">
           <select
-            value=""
+            value={formData.bowlingStyle}
             className="lg:w-[65%] lg:p-3 border-2 border-gray-600 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 focus:border-black"
             name="bowlingStyle"
             onChange={onChangeHandler}
           >
-            <option value="" className="font-thin text-xl">
+            <option value="" selected hidden className="font-thin text-xl">
               Select bowling style
             </option>
             <option value="Right-arm fast">Right-arm fast</option>
@@ -150,39 +190,43 @@ const UpdateProfile = () => {
           <div className="flex w-[90%] lg:w-[65%]">
             <label className="font-mono text-2xl pr-6">
               <input
-                checked
+                checked={formData.gender === "Male"}
                 type="radio"
                 name="gender"
                 value="Male"
                 className="mr-2 h-[18px] w-[18px]"
-                  onChange={onChangeHandler}
+                onChange={onChangeHandler}
               />
               Male
             </label>
             <label className="font-mono text-2xl pr-6">
               <input
+                checked={formData.gender === "Female"}
                 type="radio"
                 name="gender"
                 value="Female"
                 className="mr-2 h-[18px] w-[18px]"
-                  onChange={onChangeHandler}
+                onChange={onChangeHandler}
               />
               Female
             </label>
             <label className="font-mono text-2xl pr-6">
               <input
+                checked={formData.gender === "Other"}
                 type="radio"
                 name="gender"
                 value="Other"
                 className="mr-2 h-[18px] w-[18px]"
-                  onChange={onChangeHandler}
+                onChange={onChangeHandler}
               />
               Other
             </label>
           </div>
         </div>
         <div className="text-center mt-8 mb-4">
-            <button className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white">Save</button>
+          <button onClick={onSubmitHandler} className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white">
+            Save
+          </button>
         </div>
       </form>
     </div>

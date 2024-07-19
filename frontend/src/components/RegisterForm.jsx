@@ -18,17 +18,8 @@ const RegisterForm = () => {
   const [formData, setFormData] = useState({
     email: "",
     fullName: "",
-    // // jerseyNo: "",
     mobileNo: "",
-    password: "",
-    // city: "",
-    // state: "",
-    // DOB: "",
-    // playingRole: "",
-    // battingStyle: "",
-    // bowlingStyle: "",
-    // gender: "",
-    // profilePhoto: "",
+    password: ""
   });
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
