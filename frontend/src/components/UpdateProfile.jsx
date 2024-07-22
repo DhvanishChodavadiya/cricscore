@@ -14,34 +14,52 @@ const UpdateProfile = () => {
     playingRole: "",
     battingStyle: "",
     bowlingStyle: "",
-    gender: ""
+    gender: "",
   });
+  const [updated, setUpdated] = useState("");
 
   useEffect(() => {
     const users = localStorage.getItem("user");
     const user = JSON.parse(users);
     setFormData({
-      email: user.email,
+      email: user.email,  
       mobileNo: user.mobileNo,
       fullName: user.fullName,
     });
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setUpdated("");
+    }, 2000);
+  }, [updated])
+  
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({ ...prevState, [name]: value }))
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const onSubmitHandler = async(e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
     console.log(formData);
     try {
-      const response = await axios.post("/api/v1/user/updateProfile",formData);
+      const response = await axios.post("/api/v1/user/updateProfile", formData);
+      setUpdated(response.data.message);
+      setFormData({
+        jerseyNo: "",
+        city: "",
+        state: "",
+        DOB: "",
+        playingRole: "",
+        battingStyle: "",
+        bowlingStyle: "",
+        gender: "",
+      });
       console.log(response);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <div>
@@ -223,8 +241,20 @@ const UpdateProfile = () => {
             </label>
           </div>
         </div>
+
+        {updated && 
+          <div className="mt-6 w-[100%] flex justify-center">
+          <p className="lg:w-[65%] lg:p-3 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 text-green-800 bg-green-400">
+            {updated}
+          </p>
+        </div>
+        }
+
         <div className="text-center mt-8 mb-4">
-          <button onClick={onSubmitHandler} className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white">
+          <button
+            onClick={onSubmitHandler}
+            className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white"
+          >
             Save
           </button>
         </div>
