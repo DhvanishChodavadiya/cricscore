@@ -44,19 +44,6 @@ const registerUser = asyncHandler(async (req, res, next) => {
     throw new apiError(400, "Password must be between 8 and 16 characters.");
   }
 
-  // let profilePhotoLocalPath;
-  // if (
-  //   req.files &&
-  //   Array.isArray(req.files.profilePhoto) &&
-  //   req.files.profilePhoto.length > 0
-  // ) {
-  //   profilePhotoLocalPath = await req.files.profilePhoto[0].path;
-  // }
-  // const profilePhoto = await uploadOnCloudinary(profilePhotoLocalPath);
-  // if (!profilePhoto) {
-  //   throw new apiError(400, "Profile photo is required.");
-  // }
-
   // const  profilePhotoURL = profilePhoto.url;
   // const arrayOfImageURL = profilePhotoURL.split("/");
   // const imageFullName = arrayOfImageURL[arrayOfImageURL.length - 1];
@@ -69,7 +56,6 @@ const registerUser = asyncHandler(async (req, res, next) => {
     fullName,
     mobileNo,
     password,
-    // profilePhoto: profilePhoto.secure_url,
   });
   if (!user) {
     throw new apiError(500, "User not created.");
@@ -170,8 +156,19 @@ const updateProfile = asyncHandler(async (req, res) => {
     playingRole,
     battingStyle,
     bowlingStyle,
-    gender,
+    gender
   } = req.body;
+
+  // let profilePhotoLocalPath;
+  // if (
+  //   req.files &&
+  //   Array.isArray(req.files.profilePhoto) &&
+  //   req.files.profilePhoto.length > 0
+  // ) {
+    // profilePhotoLocalPath = await req.files.profilePhoto[0].path;
+  // }
+  // const profilePhoto = await uploadOnCloudinary(profilePhotoLocalPath);
+  // console.log(profilePhoto);
   const user = await User.findByIdAndUpdate(req.user._id, {
     $set: {
       fullName,
@@ -183,6 +180,7 @@ const updateProfile = asyncHandler(async (req, res) => {
       battingStyle,
       bowlingStyle,
       gender,
+      // profilePhoto: profilePhoto.url
     }}
     ,
     {

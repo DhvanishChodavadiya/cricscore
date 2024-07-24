@@ -16,13 +16,16 @@ const UpdateProfile = () => {
     bowlingStyle: "",
     gender: "",
   });
+  const [image,setImage] = useState("");
   const [updated, setUpdated] = useState("");
+  const [loading, setLoading] = useState(false);
+  
 
   useEffect(() => {
     const users = localStorage.getItem("user");
     const user = JSON.parse(users);
     setFormData({
-      email: user.email,  
+      email: user.email,
       mobileNo: user.mobileNo,
       fullName: user.fullName,
     });
@@ -32,16 +35,22 @@ const UpdateProfile = () => {
     setTimeout(() => {
       setUpdated("");
     }, 2000);
-  }, [updated])
-  
+  }, [updated]);
+
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const onSubmitHandler = async (e) => {
+    console.log(image);
     e.preventDefault();
-    console.log(formData);
+    setLoading(true);
+    // const data = new FormData();
+    // data.append('formData',formData);  
+    // data.append('image',image);
+    // console.log(formData);
+    // console.log(data);
     try {
       const response = await axios.post("/api/v1/user/updateProfile", formData);
       setUpdated(response.data.message);
@@ -55,8 +64,10 @@ const UpdateProfile = () => {
         bowlingStyle: "",
         gender: "",
       });
+      setLoading(false);
       console.log(response);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -64,6 +75,9 @@ const UpdateProfile = () => {
   return (
     <div>
       <form>
+        <div className="w-full text-center p-3">
+          <input type="file" className="w-[90%] lg:w-[65%]" onChange={(e) => {setImage(e.target.files[0])}}/>
+        </div>
         <div className="w-[100%] text-center">
           <input
             readOnly
@@ -242,22 +256,31 @@ const UpdateProfile = () => {
           </div>
         </div>
 
-        {updated && 
+        {updated && (
           <div className="mt-6 w-[100%] flex justify-center">
-          <p className="lg:w-[65%] lg:p-3 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 text-green-800 bg-green-400">
-            {updated}
-          </p>
-        </div>
-        }
+            <p className="lg:w-[65%] lg:p-3 w-[90%] p-4 rounded font-mono text-xl mb-4 mt-2 text-green-800 bg-green-400">
+              {updated}
+            </p>
+          </div>
+        )}
 
         <div className="text-center mt-8 mb-4">
-          <button
-            onClick={onSubmitHandler}
-            className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white"
-          >
-            Save
-          </button>
+          {!loading ? (
+            <button
+              onClick={onSubmitHandler}
+              className="w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white"
+            >
+              Save
+            </button>
+          ) : (
+            <button
+              className="opacity-50 cursor-not-allowed w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white"
+            >
+              Save
+            </button>
+          )}
         </div>
+        
       </form>
     </div>
   );

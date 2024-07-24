@@ -16,12 +16,12 @@ const Home = () => {
           <img
             src=""
             alt="Profile"
-            className=" h-[120px] w-[120px] bg-white rounded-full"
+            className=" h-[80px] w-[80px] lg:w-[120px] lg:h-[120px]  bg-white rounded-full"
           />
         </div>
         <div className="w-[60%]">
           <div className="">
-            <h1 className="text-white font-semibold text-2xl lg:text-3xl">
+            <h1 className="text-white font-semibold text-xl lg:text-3xl">
               {userData.fullName}
             </h1>
             <p className="text-white font-thin lg:text-xl mt-1">
