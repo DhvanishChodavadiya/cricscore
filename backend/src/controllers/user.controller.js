@@ -147,6 +147,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const updateProfile = asyncHandler(async (req, res) => {
+  console.log(req.files);
   const {
     fullName,
     jerseyNo,
@@ -156,7 +157,8 @@ const updateProfile = asyncHandler(async (req, res) => {
     playingRole,
     battingStyle,
     bowlingStyle,
-    gender
+    gender,
+    profilePhoto
   } = req.body;
 
   // let profilePhotoLocalPath;
@@ -180,7 +182,7 @@ const updateProfile = asyncHandler(async (req, res) => {
       battingStyle,
       bowlingStyle,
       gender,
-      // profilePhoto: profilePhoto.url
+      profilePhoto
     }}
     ,
     {
