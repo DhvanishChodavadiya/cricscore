@@ -16,10 +16,10 @@ const UpdateProfile = () => {
     bowlingStyle: "",
     gender: "",
   });
-  const [image,setImage] = useState("");
+  // const [profilePhoto,setProfilePhoto] = useState("");
+  const [image, setImage] = useState("");
   const [updated, setUpdated] = useState("");
   const [loading, setLoading] = useState(false);
-  
 
   useEffect(() => {
     const users = localStorage.getItem("user");
@@ -47,7 +47,7 @@ const UpdateProfile = () => {
     e.preventDefault();
     setLoading(true);
     // const data = new FormData();
-    // data.append('formData',formData);  
+    // data.append('formData',formData);
     // data.append('image',image);
     // console.log(formData);
     // console.log(data);
@@ -72,41 +72,49 @@ const UpdateProfile = () => {
     }
   };
 
-  const uploadFile = async(type) => {
+  const uploadFile = async (type) => {
     const data = new FormData();
-    data.append("file",type);
-    data.append("upload_preset","image_preset")
-    
-    try {
-      // const cloudName = process.env.CLOUD_NAME;
-      const resourceType = "auto";
-      const api = `https://api.cloudinary.com/v1_1/dwxesfu0f/${resourceType}/upload`;
+    data.append("file", type === "image" ? image : "");
+    data.append("upload_preset", "image_preset");
 
-      const res = await axios.post(api,data);
+    try {
+      const api = `https://api.cloudinary.com/v1_1/dwxesfu0f/auto/upload`;
+      const res = await axios.post(api, data);
       const { secure_url } = res.data;
-      console.log(secure_url);
+      return secure_url;
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const onImageSaveHandler = async (e) => {
     e.preventDefault();
     try {
-      const imageURL = await uploadFile('image');
-      console.log(imageURL);
-      // await axios.post("/api/v1/user/updateProfile",{imageURL}); 
+      const profilePhoto = await uploadFile("image");
+      const res = await axios.post("/api/v1/user/updateProfile", { profilePhoto });
+      setUpdated(res.data.message);
+      setImage("");
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <div>
       <form>
         <div className="w-full flex p-3">
-          <input type="file" className="w-[90%] lg:w-[65%]" onChange={(e) => setImage((prev) => e.target.files[0])}/>
-          <button className="w-[100px] text-white bg-blue-600 " onClick={onImageSaveHandler}>Save</button>
+          <input
+            type="file"
+            className="w-[90%] lg:w-[65%]"
+            onChange={(e) => setImage(e.target.files[0])}
+            // onChange={(e) => setProfilePhoto(e.target.files[0])}
+          />
+          <button
+            className="w-[100px] text-white bg-blue-600 "
+            onClick={onImageSaveHandler}
+          >
+            Save
+          </button>
         </div>
         <div className="w-[100%] text-center">
           <input
@@ -303,14 +311,11 @@ const UpdateProfile = () => {
               Save
             </button>
           ) : (
-            <button
-              className="opacity-50 cursor-not-allowed w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white"
-            >
+            <button className="opacity-50 cursor-not-allowed w-[150px] p-4 font-mono rounded-md bg-blue-600 text-white">
               Save
             </button>
           )}
         </div>
-        
       </form>
     </div>
   );
