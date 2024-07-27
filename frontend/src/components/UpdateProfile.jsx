@@ -43,7 +43,7 @@ const UpdateProfile = () => {
   };
 
   const onSubmitHandler = async (e) => {
-    console.log(image);
+    // console.log(image);
     e.preventDefault();
     setLoading(true);
     // const data = new FormData();

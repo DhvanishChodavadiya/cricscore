@@ -147,7 +147,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const updateProfile = asyncHandler(async (req, res) => {
-  console.log(req.files);
+  // console.log(req.files);
+  // const profilePhoto = req.files.path;
   const {
     fullName,
     jerseyNo,
@@ -167,10 +168,10 @@ const updateProfile = asyncHandler(async (req, res) => {
   //   Array.isArray(req.files.profilePhoto) &&
   //   req.files.profilePhoto.length > 0
   // ) {
-    // profilePhotoLocalPath = await req.files.profilePhoto[0].path;
+    // profilePhotoLocalPath = await req.file.profilePhoto[0].path;
   // }
-  // const profilePhoto = await uploadOnCloudinary(profilePhotoLocalPath);
-  // console.log(profilePhoto);
+  // const upload = await uploadOnCloudinary(profilePhoto);
+  // console.log(upload.url);
   const user = await User.findByIdAndUpdate(req.user._id, {
     $set: {
       fullName,

@@ -21,12 +21,7 @@ router.route("/newAccessToken").patch(newAccessToken);
 
 router.route("/updateProfile").post(
   verifyJWT,
-  // upload.single([
-  //   {
-  //     name: "profilePhoto",
-  //     maxCount: 1,
-  //   },
-  // ]),
+  // upload.single("profilePhoto"),
   updateProfile
 );
 
