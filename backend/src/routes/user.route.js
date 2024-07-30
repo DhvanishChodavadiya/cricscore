@@ -5,6 +5,7 @@ import {
   newAccessToken,
   registerUser,
   updateProfile,
+  uploadProfilePhoto,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -24,5 +25,7 @@ router.route("/updateProfile").post(
   // upload.single("profilePhoto"),
   updateProfile
 );
+
+router.route("/profilePhoto").post(verifyJWT,upload.single("profilePhoto"),uploadProfilePhoto);
 
 export default router;

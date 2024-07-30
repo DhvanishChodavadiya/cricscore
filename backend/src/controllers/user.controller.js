@@ -159,7 +159,7 @@ const updateProfile = asyncHandler(async (req, res) => {
     battingStyle,
     bowlingStyle,
     gender,
-    profilePhoto
+    profilePhoto,
   } = req.body;
 
   // let profilePhotoLocalPath;
@@ -168,37 +168,34 @@ const updateProfile = asyncHandler(async (req, res) => {
   //   Array.isArray(req.files.profilePhoto) &&
   //   req.files.profilePhoto.length > 0
   // ) {
-    // profilePhotoLocalPath = await req.file.profilePhoto[0].path;
+  // profilePhotoLocalPath = await req.file.profilePhoto[0].path;
   // }
   // const upload = await uploadOnCloudinary(profilePhoto);
   // console.log(upload.url);
-  const user = await User.findByIdAndUpdate(req.user._id, {
-    $set: {
-      fullName,
-      jerseyNo,
-      city,
-      state,
-      DOB,
-      playingRole,
-      battingStyle,
-      bowlingStyle,
-      gender,
-      profilePhoto
-    }}
-    ,
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
     {
-      new: true
+      $set: {
+        fullName,
+        jerseyNo,
+        city,
+        state,
+        DOB,
+        playingRole,
+        battingStyle,
+        bowlingStyle,
+        gender,
+        profilePhoto,
+      },
+    },
+    {
+      new: true,
     }
   );
 
-  return res.status(200)
-  .json(
-    new apiResponse(
-      200,
-      user,
-      "User profile updated successfully."
-    )
-  )
+  return res
+    .status(200)
+    .json(new apiResponse(200, user, "User profile updated successfully."));
 });
 
 const newAccessToken = asyncHandler(async (req, res) => {
@@ -241,4 +238,32 @@ const newAccessToken = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerUser, loginUser, logoutUser, newAccessToken, updateProfile };
+const uploadProfilePhoto = asyncHandler(async (req, res) => {
+  const localPath = req.file?.path;
+  console.log(localPath);
+  const avatar = await uploadOnCloudinary(localPath);
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        profilePhoto: avatar.url,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  return res
+    .status(200)
+    .json(new apiResponse(200, user, "profile picture updated successfully."));
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  newAccessToken,
+  updateProfile,
+  uploadProfilePhoto,
+};
